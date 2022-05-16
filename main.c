@@ -25,8 +25,8 @@ int main() {
 }
 
 void tipo1(char nome_entrada[30], char nome_saida[30]){
-    FILE entrada;
-    FILEsaida;
+    FILE *entrada;
+    FILE *saida;
 
 
     entrada= fopen(nome_entrada, "rb");
