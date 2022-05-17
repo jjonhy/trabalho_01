@@ -68,23 +68,23 @@ void tipo1(char nome_entrada[30], char nome_saida[30]){
     FILE *entrada;
     FILE *saida;
 
-    CABECAO *cabecinha;
-    strcpy(cabecinha->status,"1");
-    cabecinha->topo = -1;
-    strcpy(cabecinha->descricao, "LISTAGEM DA FROTA DOS VEICULOS NO BRASIL");
-    strcpy(cabecinha->desC1, "CODIGO IDENTIFICADOR: ");
-    strcpy(cabecinha->desC2, "ANO DE FABRICACAO: ");
-    strcpy(cabecinha->desC3,"QUANTIDADE DE VEICULOS: ");
-    strcpy(cabecinha->desC4, "ESTADO: ");
-    strcpy(cabecinha->codC5, "0");
-    strcpy(cabecinha->desC5, "NOME DA CIDADE");
-    strcpy(cabecinha->codC6, "1");
-    strcpy(cabecinha->desC6, "MARCA DE VEICULO");
-    strcpy(cabecinha->desC7, "2");
-    strcpy(cabecinha->codC7, "MODELO DO VEICULO");
+    CABECAO cabecinha;
+    strcpy(cabecinha.status,"1");
+    cabecinha.topo = -1;
+    strcpy(cabecinha.descricao, "LISTAGEM DA FROTA DOS VEICULOS NO BRASIL");
+    strcpy(cabecinha.desC1, "CODIGO IDENTIFICADOR: ");
+    strcpy(cabecinha.desC2, "ANO DE FABRICACAO: ");
+    strcpy(cabecinha.desC3,"QUANTIDADE DE VEICULOS: ");
+    strcpy(cabecinha.desC4, "ESTADO: ");
+    strcpy(cabecinha.codC5, "0");
+    strcpy(cabecinha.desC5, "NOME DA CIDADE");
+    strcpy(cabecinha.codC6, "1");
+    strcpy(cabecinha.desC6, "MARCA DE VEICULO");
+    strcpy(cabecinha.desC7, "2");
+    strcpy(cabecinha.codC7, "MODELO DO VEICULO");
 
     printf("%lu\n",sizeof(CABECAO));
-    printf("%lu", sizeof(cabecinha->status));
+    printf("%lu", sizeof(cabecinha.status));
     //entrada= fopen(nome_entrada, "r");
 
     //fread()
@@ -93,7 +93,7 @@ void tipo1(char nome_entrada[30], char nome_saida[30]){
 
 
     saida= fopen(nome_saida, "w+b");
-    fwrite(cabecinha,1, sizeof(CABECAO),saida);
+    fwrite(&cabecinha,1, sizeof(CABECAO),saida);
     fclose(saida);
 
 }
