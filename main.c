@@ -12,11 +12,13 @@
 
 int main() {
     char tipo[30];
+    int escolha;
     char nome_entrada[30];
     char nome_saida[30];
-    int escolha;
+
     //scanf("%d %s %s %s",&escolha,tipo,nome_entrada,nome_saida);
     strcpy(tipo,"tipo1");
+    escolha = 2;
     strcpy(nome_entrada,"arquivoEntrada1.csv");
     strcpy(nome_saida,"bin.bin");
 
