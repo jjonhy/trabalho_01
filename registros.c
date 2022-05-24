@@ -3,6 +3,8 @@
 //
 #include <stdio.h>
 #include "registros.h"
+#include <stdlib.h>
+#include <string.h>
 
 CABECAO *set_cabecalho1()
 {
@@ -233,6 +235,7 @@ DADAO2 *funcao1_tipo2(const char *line) {
         }
         if (caracter == ',' && cont == 1){
             if (char_anterior == ','){
+                input->ano = -1;
                 //printf("null ");
             }
             else{
@@ -246,6 +249,7 @@ DADAO2 *funcao1_tipo2(const char *line) {
         if (caracter == ',' && cont == 2){
             if (char_anterior == ','){
                 //printf("null ");
+                input->cidade = NULL;
             }
             else{
                 string[tam_string-1] = '\0';
@@ -259,6 +263,7 @@ DADAO2 *funcao1_tipo2(const char *line) {
         if (caracter == ',' && cont == 3){
             if (char_anterior == ','){
                 //printf("null ");
+                input->qtt = -1;
             }
             else{
                 string[tam_string-1] = '\0';
@@ -283,6 +288,7 @@ DADAO2 *funcao1_tipo2(const char *line) {
         if (caracter == ',' && cont == 5){
             if (char_anterior == ','){
                 //printf("null ");
+                input->marca = NULL;
             }
             else{
                 string[tam_string-1] = '\0';
@@ -296,6 +302,7 @@ DADAO2 *funcao1_tipo2(const char *line) {
         if ( caracter == '\r' && cont == 6){
             if (char_anterior == ','){
                 //printf("null ");
+                input->modelo = NULL;
             }
             else{
                 string[tam_string-1] = '\0';
@@ -322,14 +329,17 @@ DADAO2 *funcao1_tipo2(const char *line) {
 }
 void funcao2_tipo1(char nome_entrada[30]){
     FILE *entrada;
-    FILE *saida;
+    entrada= fopen(nome_entrada, "rb");
+   // CABECAO *cabecalho = (CABECAO*) malloc(sizeof(CABECAO));
+   // fread(cabecalho, sizeof(CABECAO), 1, entrada);
+    fseek(entrada,182, SEEK_SET);
+    //char line[1024];
+    //fgets(line,1024,entrada);
 
-    entrada= fopen(nome_entrada, "r");
-
-    char line[1024];
-    fgets(line,1024,entrada);
-    while(fgets(line,1024,entrada)){
-        DADAO *input = funcao1_tipo1(line);
+    unsigned long x = 5;
+    do{
+        DADAO *input = (DADAO*) malloc(sizeof(DADAO));
+        x = fread(input, sizeof(DADAO), 1 , entrada);
         if (input->marca != NULL)
             printf("MARCA DO VEICULO: %s\n", input->marca);
         else
@@ -351,10 +361,15 @@ void funcao2_tipo1(char nome_entrada[30]){
         else
             printf("NAO PREENCHIDO\n");
         printf("\n");
-    }
+    }while(x != 0);
 
     fclose(entrada);
 }
+
+void funcao2_tipo2(char nome_entrada[30]){
+
+}
+
 void binarioNaTela(char*nomeArquivoBinario) { /* Você não precisa entender o código dessa função. */
 
     /* Use essa função para comparação no run.codes. Lembre-se de ter fechado (fclose) o arquivo anteriormente.

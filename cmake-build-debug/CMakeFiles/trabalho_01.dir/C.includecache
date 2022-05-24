@@ -6,11 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/main.c
+/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.c
 stdio.h
+-
+registros.h
+/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.h
+stdlib.h
 -
 string.h
 -
-stdlib.h
--
+
+/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.h
 

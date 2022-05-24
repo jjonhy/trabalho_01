@@ -4,4 +4,6 @@ project(trabalho_01 C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(trabalho_01
-        main.c)
+        main.c
+        registros.c
+        registros.h)

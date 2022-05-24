@@ -79,6 +79,12 @@
 		<Unit filename="/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/main.c">
 			<Option target="trabalho_01"/>
 		</Unit>
+		<Unit filename="/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.c">
+			<Option target="trabalho_01"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.h">
+			<Option target="trabalho_01"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

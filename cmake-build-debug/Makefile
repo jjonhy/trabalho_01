@@ -150,6 +150,33 @@ main.c.s:
 	$(MAKE) -f CMakeFiles/trabalho_01.dir/build.make CMakeFiles/trabalho_01.dir/main.c.s
 .PHONY : main.c.s
 
+registros.o: registros.c.o
+
+.PHONY : registros.o
+
+# target to build an object file
+registros.c.o:
+	$(MAKE) -f CMakeFiles/trabalho_01.dir/build.make CMakeFiles/trabalho_01.dir/registros.c.o
+.PHONY : registros.c.o
+
+registros.i: registros.c.i
+
+.PHONY : registros.i
+
+# target to preprocess a source file
+registros.c.i:
+	$(MAKE) -f CMakeFiles/trabalho_01.dir/build.make CMakeFiles/trabalho_01.dir/registros.c.i
+.PHONY : registros.c.i
+
+registros.s: registros.c.s
+
+.PHONY : registros.s
+
+# target to generate assembly for a file
+registros.c.s:
+	$(MAKE) -f CMakeFiles/trabalho_01.dir/build.make CMakeFiles/trabalho_01.dir/registros.c.s
+.PHONY : registros.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +189,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... registros.o"
+	@echo "... registros.i"
+	@echo "... registros.s"
 .PHONY : help
 
 

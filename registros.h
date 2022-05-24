@@ -91,6 +91,7 @@ void tipo2(char nome_entrada[30], char nome_saida[30]);
 DADAO *funcao1_tipo1(const char *line);
 DADAO2 *funcao1_tipo2(const char *line);
 void funcao2_tipo1(char nome_entrada[30]);
+void funcao2_tipo2(char nome_entrada[30]);
 void binarioNaTela(char *nomeArquivoBinario);
 
 #endif //TRABALHO_01_REGISTROS_H
