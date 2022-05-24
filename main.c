@@ -18,7 +18,7 @@ int main() {
     //strcpy(nome_entrada,"arquivoEntrada1.csv");
     //strcpy(nome_saida,"bin.bin");
     //scanf("%d", &escolha);
-    strcpy(nome_entrada,"binario5.bin");
+    strcpy(nome_entrada,"binario8.bin");
 
     printf("SIZE CABEÇALHO %lu\n",sizeof(struct registro_de_cabeca));
     printf("SIZE CABEÇALHO2 %lu\n",sizeof(CABECAO2));

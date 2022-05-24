@@ -339,28 +339,29 @@ void funcao2_tipo1(char nome_entrada[30]){
     fseek(entrada,182, SEEK_SET);
     //char line[1024];
     //fgets(line,1024,entrada);
-    int i = 1;
+    int i = 0;
     while(!feof(entrada)){
+        fseek(entrada,182 + 97*i, SEEK_SET);
         DADAO *input = (DADAO*) malloc(sizeof(DADAO));
-        fread(&input->removido, 1, 1 , entrada);
+        fread(&input->removido, sizeof(char ), 1 , entrada);
         printf("REMOVIDO: %s ", &input->removido);
-        fread(&input->prox, 4, 1 , entrada);
+        fread(&input->prox, sizeof(int), 1 , entrada);
         printf("PROX: %d ", input->prox);
-        fread(&input->id, 4, 1 , entrada);
+        fread(&input->id, sizeof(int), 1 , entrada);
         if (input->id == -1){
             printf("NAO PREENCHIDO ");
         }
         else{
             printf("ID: %d ", input->id);
         }
-        fread(&input->ano, 4, 1 , entrada);
+        fread(&input->ano, sizeof(int), 1 , entrada);
         if (input->ano == -1){
             printf("NAO PREENCHIDO ");
         }
         else{
             printf("ANO: %d ", input->ano);
         }
-        fread(&input->qtt, 4, 1 , entrada);
+        fread(&input->qtt, sizeof(int), 1 , entrada);
         if (input->qtt == -1){
             printf("NAO PREENCHIDO ");
         }
@@ -369,7 +370,7 @@ void funcao2_tipo1(char nome_entrada[30]){
         }
         fread(input->sigla, 2, 1 , entrada);
             printf("SIGLA: %s ", input->sigla);
-        fread(&input->tamCidade, 4, 1 , entrada);
+        fread(&input->tamCidade, sizeof(int), 1 , entrada);
         printf("TAMCIDADE: %d ", input->tamCidade);
         fread(&input->codC5, 1, 1 , entrada);
         printf("CODC5: %s ", &input->codC5);
@@ -404,6 +405,7 @@ void funcao2_tipo1(char nome_entrada[30]){
         }
         printf("\n");
         i++;
+
     }
 
     fclose(entrada);
