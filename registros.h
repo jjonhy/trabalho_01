@@ -7,18 +7,18 @@
 
 //registro de cabeçalho 1
 struct registro_de_cabeca{
-    char status;
+    char status[0];
     int topo;
     char descricao[40];
     char desC1[22];
     char desC2[19];
     char desC3[24];
     char desC4[8];
-    char codC5;
+    char codC5[0];
     char desC5[16];
-    char codC6;
+    char codC6[0];
     char desC6[18];
-    char codC7;
+    char codC7[0];
     char desC7[19];
     int proxRRN;
     int nroRegRem;

@@ -13,7 +13,8 @@ CABECAO *set_cabecalho1()
     cab_return = (CABECAO *)malloc(sizeof(CABECAO));
 
     //prenchendo o registro com as informações iniciais
-    cab_return->status = '0';
+//    cab_return->status = '0';
+    strcpy(cab_return->status, "0");
     cab_return->topo = -1;
     strcpy(cab_return->descricao,"LISTAGEM DA FROTA DOS VEICULOS NO BRASIL");
     strcpy(cab_return->desC1, "CODIGO IDENTIFICADOR: ");
@@ -23,9 +24,12 @@ CABECAO *set_cabecalho1()
     strcpy(cab_return->desC5, "NOME DA CIDADE: ");
     strcpy(cab_return->desC6, "MARCA DO VEICULO: ");
     strcpy(cab_return->desC7, "MODELO DO VEICULO: ");
-    cab_return->codC5 = '0';
-    cab_return->codC6 = '1';
-    cab_return->codC7 = '2';
+//    cab_return->codC5 = '0';
+//    cab_return->codC6 = '1';
+//    cab_return->codC7 = '2';
+    strcpy(cab_return->codC5, "0");
+    strcpy(cab_return->codC6, "1");
+    strcpy(cab_return->codC7, "2");
     cab_return->proxRRN = 0;
     cab_return->nroRegRem = 0;
 
@@ -335,33 +339,72 @@ void funcao2_tipo1(char nome_entrada[30]){
     fseek(entrada,182, SEEK_SET);
     //char line[1024];
     //fgets(line,1024,entrada);
-
-    unsigned long x = 5;
-    do{
+    int i = 1;
+    while(!feof(entrada)){
         DADAO *input = (DADAO*) malloc(sizeof(DADAO));
-        x = fread(input, sizeof(DADAO), 1 , entrada);
-        if (input->marca != NULL)
-            printf("MARCA DO VEICULO: %s\n", input->marca);
-        else
-            printf("NAO PREENCHIDO\n");
-        if (input->modelo != NULL)
-            printf("MODELO DO VEICULO: %s\n", input->modelo);
-        else
-            printf("NAO PREENCHIDO\n");
-        if (input->ano != -1)
-            printf("ANO DE FABRICACAO: %d\n", input->ano);
-        else
-            printf("NAO PREENCHIDO\n");
-        if (input->cidade != NULL)
-            printf("NOME DA CIDADE: %s\n", input->cidade);
-        else
-            printf("NAO PREENCHIDO\n");
-        if (input->qtt != -1)
-            printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-        else
-            printf("NAO PREENCHIDO\n");
+        fread(&input->removido, 1, 1 , entrada);
+        printf("REMOVIDO: %s ", &input->removido);
+        fread(&input->prox, 4, 1 , entrada);
+        printf("PROX: %d ", input->prox);
+        fread(&input->id, 4, 1 , entrada);
+        if (input->id == -1){
+            printf("NAO PREENCHIDO ");
+        }
+        else{
+            printf("ID: %d ", input->id);
+        }
+        fread(&input->ano, 4, 1 , entrada);
+        if (input->ano == -1){
+            printf("NAO PREENCHIDO ");
+        }
+        else{
+            printf("ANO: %d ", input->ano);
+        }
+        fread(&input->qtt, 4, 1 , entrada);
+        if (input->qtt == -1){
+            printf("NAO PREENCHIDO ");
+        }
+        else{
+            printf("QTT: %d ", input->qtt);
+        }
+        fread(input->sigla, 2, 1 , entrada);
+            printf("SIGLA: %s ", input->sigla);
+        fread(&input->tamCidade, 4, 1 , entrada);
+        printf("TAMCIDADE: %d ", input->tamCidade);
+        fread(&input->codC5, 1, 1 , entrada);
+        printf("CODC5: %s ", &input->codC5);
+        if (strcpy(&input->codC5,"0") != 0) {
+
+        }
+        else{
+            fread(input->cidade, input->tamCidade, 1 , entrada);
+            printf("NOME DA CIDADE: %s ", input->cidade);
+        }
+        fread(&input->tamMarca, 4, 1 , entrada);
+        printf("TAMMARCA: %d ", input->tamMarca);
+        fread(&input->codC6, 1, 1 , entrada);
+        printf("CODC6: %s ", &input->codC6);
+        if (strcpy(&input->codC6,"1") != 0){
+
+        }
+        else{
+            fread(input->marca, input->tamMarca, 1 , entrada);
+            printf("MARCA DO VEICULO: %s ", input->marca);
+        }
+        fread(&input->tamModelo, 4, 1 , entrada);
+        printf("TAMmodelo: %d ", input->tamModelo);
+        fread(&input->codC7, 1, 1 , entrada);
+        printf("CODC7: %s ", &input->codC7);
+        if (strcpy(&input->codC5, "2") !=0 ){
+
+        }
+        else{
+            fread(input->modelo, input->tamModelo, 1 , entrada);
+            printf("MODELO DO VEICULO: %s", input->modelo);
+        }
         printf("\n");
-    }while(x != 0);
+        i++;
+    }
 
     fclose(entrada);
 }
