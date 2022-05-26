@@ -555,28 +555,18 @@ void funcao2_tipo2(char nome_entrada[30]){
 
 void funcao3_tipo1(char nome_entrada[30], int quantidade){
 
-    char campo[30];
-    char variavel[50];
-    int ajuda;
-    for (int i = 0; i < quantidade; ++i) {
-        scanf("%s", campo);
-        scan_quote_string(variavel);
+    char campo[quantidade][30];
+    char variavel[quantidade][50];
+    for (int i = 0; i < quantidade; i++) {
+        scanf("%s", campo[i]);
+        scan_quote_string(variavel[i]);
         //printf("\n%s e %s\n", str1, str2);
-        func3_aux_tipo1(nome_entrada, campo, variavel, quantidade, &ajuda);
     }
-
-}
-
-void func3_aux_tipo1(char nome_entrada[30],char campo[30], char variavel[50], int cont, int *ajuda){
+    //func3_aux_tipo1(nome_entrada, campo, variavel, quantidade);
     FILE *entrada;
     entrada= fopen(nome_entrada, "rb");
-    // CABECAO *cabecalho = (CABECAO*) malloc(sizeof(CABECAO));
-    // fread(cabecalho, sizeof(CABECAO), 1, entrada);
     fseek(entrada,182, SEEK_SET);
-    //char line[1024];
-    //fgets(line,1024,entrada);
-    *ajuda = 2;
-    printf("O campo é ;%s; a variavel é ;%s; e a ajuda é ;%d; e o cont;%d;", campo, variavel,*ajuda, cont);
+    int ajuda = 0;
     int i = 0;
     do{
         fseek(entrada,182 + 97*i, SEEK_SET);
@@ -584,9 +574,38 @@ void func3_aux_tipo1(char nome_entrada[30],char campo[30], char variavel[50], in
         fread(&(input->removido), sizeof(char ), 1 , entrada);
         fread(&(input->prox), sizeof(int), 1 , entrada);
         fread(&(input->id), sizeof(int), 1 , entrada);
+        for (int j = 0; j< quantidade; j++){
+            if (strcmp(campo[j], "id") == 0){
+                if (input->id == atoi(variavel[j])){
+                    ajuda++;
+                }
+            }
+        }
         fread(&(input->ano), sizeof(int), 1 , entrada);
+        for (int j = 0; j< quantidade; j++){
+            if (strcmp(campo[j], "ano") == 0){
+                if (input->ano == atoi(variavel[j])){
+                    ajuda++;
+                }
+            }
+        }
         fread(&(input->qtt), sizeof(int), 1 , entrada);
+        for (int j = 0; j< quantidade; j++){
+            if (strcmp(campo[j], "qtt") == 0){
+                if (input->qtt == atoi(variavel[j])){
+                    ajuda++;
+                }
+            }
+        }
         fread(input->sigla, 2, 1 , entrada);
+        for (int j = 0; j< quantidade; j++){
+            if (strcmp(campo[j], "sigla") == 0){
+                if (strcmp(input->sigla,variavel[j]) == 0){
+                    ajuda++;
+                }
+            }
+        }
+
         for(int j = 0; j<3;j++){
             char auxc;
             int auxnumero;
@@ -597,90 +616,196 @@ void func3_aux_tipo1(char nome_entrada[30],char campo[30], char variavel[50], in
                 input->codC5 = auxc;
                 input->cidade = malloc(input->tamCidade * sizeof(char ));
                 fread(input->cidade, input->tamCidade,1, entrada);
+                //printf("CIDADE %s ",input->cidade);
+                for (int k = 0; k< quantidade; k++){
+                    if (strcmp(campo[k], "cidade") == 0){
+                        if (strcmp(input->cidade,variavel[k]) == 0){
+                            ajuda++;
+                        }
+                    }
+                }
             }
             if (auxc == '1'){
                 input->tamMarca = auxnumero;
                 input->codC6 = auxc;
                 input->marca = malloc(input->tamMarca * sizeof(char ));
                 fread(input->marca, input->tamMarca,1, entrada);
+                //printf("MARCA %s ",input->marca);
+                for (int k = 0; k< quantidade; k++){
+                    if (strcmp(campo[k], "marca") == 0){
+                        if (strcmp(input->marca,variavel[k]) == 0){
+                            ajuda++;
+                        }
+                    }
+                }
             }
             if (auxc == '2'){
                 input->tamModelo = auxnumero;
                 input->codC7 = auxc;
                 input->modelo = malloc(input->tamModelo * sizeof(char ));
                 fread(input->modelo, input->tamModelo,1, entrada);
+                //printf("MODELO %s ",input->modelo);
+                for (int k = 0; k< quantidade; k++){
+                    if (strcmp(campo[k], "modelo") == 0){
+                        if (strcmp(input->modelo,variavel[k]) == 0){
+                            ajuda++;
+                        }
+                    }
+                }
             }
         }
-
-        if ( input->removido == '0') {
-            if (strcmp(campo, "id") == 0){
-                if (input->id == atoi(variavel)){
-                    (*ajuda)++;
-                }
+        //printf("\n");
+        if (ajuda == quantidade && input->removido == '0') {
+            if (input->marca == NULL) {
+                printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
+            } else {
+                printf("MARCA DO VEICULO: %s\n", input->marca);
             }
-            if (strcmp(campo, "ano") == 0){
-                if (input->ano == atoi(variavel)){
-                    (*ajuda)++;
-                }
+            if (input->modelo == NULL) {
+                printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
+            } else {
+                printf("MODELO DO VEICULO: %s\n", input->modelo);
             }
-            if (strcmp(campo, "qtt") == 0){
-                if (input->qtt == atoi(variavel)){
-                    (*ajuda)++;
-                }
+            if (input->ano == -1) {
+                printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
+            } else {
+                printf("ANO DE FABRICACAO: %d\n", input->ano);
             }
-            if (strcmp(campo, "sigla") == 0){
-                if (strcmp(input->sigla,variavel) == 0){
-                    (*ajuda)++;
-                }
+            if (input->cidade == NULL) {
+                printf("NOME DA CIDADE: NAO PREENCHIDO\n");
+            } else {
+                printf("NOME DA CIDADE: %s\n", input->cidade);
             }
-            if (strcmp(campo, "cidade") == 0){
-                if (strcmp(input->cidade,variavel) == 0){
-                    (*ajuda)++;
-                    printf("O campo é ;%s; a variavel é ;%s; e a ajuda é ;%d;", campo, variavel,*ajuda);
-
-                }
+            if (input->qtt == -1) {
+                printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
+            } else {
+                printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
             }
-            if (strcmp(campo, "marca") == 0){
-                if (strcmp(input->marca,variavel) == 0){
-                    (*ajuda)++;
-                }
-            }
-            if (strcmp(campo, "modelo") == 0){
-                if (strcmp(input->modelo,variavel) == 0){
-                    (*ajuda)++;
-                }
-            }
-            if (*ajuda == cont) {
-                if (input->marca == NULL) {
-                    printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
-                } else {
-                    printf("MARCA DO VEICULO: %s\n", input->marca);
-                }
-                if (input->modelo == NULL) {
-                    printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
-                } else {
-                    printf("MODELO DO VEICULO: %s\n", input->modelo);
-                }
-                if (input->ano == -1) {
-                    printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
-                } else {
-                    printf("ANO DE FABRICACAO: %d\n", input->ano);
-                }
-                if (input->cidade == NULL) {
-                    printf("NOME DA CIDADE: NAO PREENCHIDO\n");
-                } else {
-                    printf("NOME DA CIDADE: %s\n", input->cidade);
-                }
-                if (input->qtt == -1) {
-                    printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
-                } else {
-                    printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-                }
-                printf("\n");
-            }
+            printf("\n");
         }
+        ajuda = 0;
         i++;
+    }while(!feof(entrada));
 
+    fclose(entrada);
+}
+
+void func3_aux_tipo1(char nome_entrada[30],char *campo[], char *variavel[], int cont){
+    FILE *entrada;
+    entrada= fopen(nome_entrada, "rb");
+    // CABECAO *cabecalho = (CABECAO*) malloc(sizeof(CABECAO));
+    // fread(cabecalho, sizeof(CABECAO), 1, entrada);
+    fseek(entrada,182, SEEK_SET);
+    //char line[1024];
+    //fgets(line,1024,entrada);
+    int ajuda = 0;
+    int i = 0;
+    do{
+        fseek(entrada,182 + 97*i, SEEK_SET);
+        DADAO *input = (DADAO*) malloc(sizeof(DADAO));
+        fread(&(input->removido), sizeof(char ), 1 , entrada);
+        fread(&(input->prox), sizeof(int), 1 , entrada);
+        fread(&(input->id), sizeof(int), 1 , entrada);
+        if (strcmp(*campo, "id") == 0){
+            if (input->id == atoi(variavel)){
+                ajuda++;
+            }
+        }
+        fread(&(input->ano), sizeof(int), 1 , entrada);
+        if (strcmp(*campo, "ano") == 0){
+            if (input->ano == atoi(variavel)){
+                ajuda++;
+            }
+        }
+        fread(&(input->qtt), sizeof(int), 1 , entrada);
+        if (strcmp(campo, "qtt") == 0){
+            if (input->qtt == atoi(variavel)){
+                ajuda++;
+            }
+        }
+        fread(input->sigla, 2, 1 , entrada);
+        if (strcmp(campo, "sigla") == 0){
+            if (strcmp(input->sigla,variavel) == 0){
+                ajuda++;
+            }
+        }
+
+        for(int j = 0; j<3;j++){
+            char auxc;
+            int auxnumero;
+            fread(&auxnumero, sizeof(int), 1, entrada);
+            fread(&auxc, sizeof(char ), 1 , entrada);
+            if (auxc == '0'){
+                input->tamCidade = auxnumero;
+                input->codC5 = auxc;
+                input->cidade = malloc(input->tamCidade * sizeof(char ));
+                fread(input->cidade, input->tamCidade,1, entrada);
+                //printf("CIDADE %s ",input->cidade);
+                if (strcmp(campo, "cidade") == 0 ){
+                    if (strcmp(input->cidade, variavel)==0){
+                        ajuda++;
+                        printf(" AJUDA EM CIDADE: %d e CONT %d\n", ajuda, cont);
+                    }
+                }
+            }
+            if (auxc == '1'){
+                input->tamMarca = auxnumero;
+                input->codC6 = auxc;
+                input->marca = malloc(input->tamMarca * sizeof(char ));
+                fread(input->marca, input->tamMarca,1, entrada);
+                //printf("MARCA %s ",input->marca);
+                if (strcmp(campo, "marca") == 0 ){
+                    if (strcmp(input->marca, variavel)==0){
+                        ajuda++;
+                        printf(" AJUDA EM MARCA: %d e CONT %d\n", ajuda, cont);
+                    }
+                }
+            }
+            if (auxc == '2'){
+                input->tamModelo = auxnumero;
+                input->codC7 = auxc;
+                input->modelo = malloc(input->tamModelo * sizeof(char ));
+                fread(input->modelo, input->tamModelo,1, entrada);
+                //printf("MODELO %s ",input->modelo);
+                if (strcmp(campo, "modelo") == 0 ){
+                    if (strcmp(input->modelo, variavel)==0){
+                        ajuda++;
+                        printf(" AJUDA EM MODELO: %d e CONT %d\n", ajuda, cont);
+                    }
+                }
+            }
+        }
+        //printf("\n");
+        if (ajuda == cont && input->removido == '0') {
+            if (input->marca == NULL) {
+                printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
+            } else {
+                printf("MARCA DO VEICULO: %s\n", input->marca);
+            }
+            if (input->modelo == NULL) {
+                printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
+            } else {
+                printf("MODELO DO VEICULO: %s\n", input->modelo);
+            }
+            if (input->ano == -1) {
+                printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
+            } else {
+                printf("ANO DE FABRICACAO: %d\n", input->ano);
+            }
+            if (input->cidade == NULL) {
+                printf("NOME DA CIDADE: NAO PREENCHIDO\n");
+            } else {
+                printf("NOME DA CIDADE: %s\n", input->cidade);
+            }
+            if (input->qtt == -1) {
+                printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
+            } else {
+                printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
+            }
+            printf("\n");
+        }
+        ajuda = 0;
+        i++;
     }while(!feof(entrada));
 
     fclose(entrada);

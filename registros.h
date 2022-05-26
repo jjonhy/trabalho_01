@@ -96,6 +96,6 @@ void funcao3_tipo1(char nome_entrada[30], int quantidade);
 void funcao3_tipo2(char nome_entrada[30], int quantidade);
 void binarioNaTela(char *nomeArquivoBinario);
 void scan_quote_string(char *str);
-void func3_aux_tipo1(char nome_entrada[30], char campo[30], char variavel[50], int cont, int*ajuda);
+void func3_aux_tipo1(char nome_entrada[30], char *campo[], char *variavel[], int cont);
 
 #endif //TRABALHO_01_REGISTROS_H
