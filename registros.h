@@ -7,18 +7,18 @@
 
 //registro de cabeçalho 1
 struct registro_de_cabeca{
-    char status[0];
+    char status;
     int topo;
     char descricao[40];
     char desC1[22];
     char desC2[19];
     char desC3[24];
     char desC4[8];
-    char codC5[0];
+    char codC5;
     char desC5[16];
-    char codC6[0];
+    char codC6;
     char desC6[18];
-    char codC7[0];
+    char codC7;
     char desC7[19];
     int proxRRN;
     int nroRegRem;
@@ -77,8 +77,6 @@ struct arquivo2{
     int tamModelo;
     char codC7, *modelo;
 
-
-
 };
 
 typedef struct registro_de_dados DADAO;
@@ -88,14 +86,15 @@ CABECAO *set_cabecalho1();
 CABECAO2 *set_cabecalho2();
 void tipo1(char nome_entrada[30], char nome_saida[30]);
 void tipo2(char nome_entrada[30], char nome_saida[30]);
-DADAO *funcao1_tipo1(const char *line);
-DADAO2 *funcao1_tipo2(const char *line);
+DADAO *funcao1_tipo1(const char *line, FILE *saida);
+DADAO2 *funcao1_tipo2(const char *line, FILE *saida);
 void funcao2_tipo1(char nome_entrada[30]);
 void funcao2_tipo2(char nome_entrada[30]);
 void funcao3_tipo1(char nome_entrada[30], int quantidade);
 void funcao3_tipo2(char nome_entrada[30], int quantidade);
+void funcao4(char nome_entrada[30], int RRN);
 void binarioNaTela(char *nomeArquivoBinario);
 void scan_quote_string(char *str);
-void func3_aux_tipo1(char nome_entrada[30], char *campo[], char *variavel[], int cont);
-
+DADAO* retornainput(char nome_entrada[30], int i);
+void printainput();
 #endif //TRABALHO_01_REGISTROS_H
