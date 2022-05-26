@@ -74,7 +74,7 @@ void tipo1(char nome_entrada[30], char nome_saida[30]){
     fgets(line,1024,entrada);
     while(fgets(line,1024,entrada)){
         //printf("tam de line %lu\n", strlen(line));
-        DADAO *input = funcao1_tipo1(line, saida);
+        DADAO *input = funcao1_tipo1(line);
         fwrite(&input->removido, sizeof(char ),1, saida);
         fwrite(&input->prox, sizeof(int ),1, saida);
         fwrite(&input->id, sizeof(int ),1, saida);
@@ -117,9 +117,31 @@ void tipo2(char nome_entrada[30], char nome_saida[30]){
     fgets(line,1024,entrada);
     while(fgets(line,1024,entrada)){
         //printf("tam de line %lu\n", strlen(line));
-        DADAO2 *input = funcao1_tipo2(line, nome_saida);
-        fwrite(input, sizeof(DADAO),1 , saida);
+        DADAO2 *input = funcao1_tipo2(line);
+        //fwrite(input, sizeof(DADAO),1 , saida);
         //printf("%d\n", input->id);
+        fwrite(&input->removido, sizeof(char ),1, saida);
+        fwrite(&input->tamanhoRegistro, sizeof(int ),1, saida);
+        fwrite(&input->prox, sizeof(long long int ),1, saida);
+        fwrite(&input->id, sizeof(int ),1, saida);
+        fwrite(&input->ano, sizeof(int ),1, saida);
+        fwrite(&input->qtt, sizeof (int),1, saida);
+        fwrite(input->sigla, 2 * sizeof(char ),1, saida);
+        if (input->cidade != NULL){
+            fwrite(&input->tamCidade, sizeof(int ),1, saida);
+            fwrite(&input->codC5, sizeof(char ),1, saida);
+            fwrite(input->cidade, input->tamCidade * sizeof(char ),1, saida);
+        }
+        if (input->marca != NULL){
+            fwrite(&input->tamMarca, sizeof(int ),1, saida);
+            fwrite(&input->codC6, sizeof(char ),1, saida);
+            fwrite(input->marca, input->tamMarca * sizeof(char ),1, saida);
+        }
+        if (input->modelo != NULL){
+            fwrite(&input->tamModelo, sizeof(int ),1, saida);
+            fwrite(&input->codC7, sizeof(char ),1, saida);
+            fwrite(input->modelo, input->tamModelo * sizeof(char ),1, saida);
+        }
     }
     fclose(entrada);
     fclose(saida);
@@ -127,7 +149,7 @@ void tipo2(char nome_entrada[30], char nome_saida[30]){
     binarioNaTela(nome_saida);
 }
 
-DADAO *funcao1_tipo1(const char *line, FILE *saida) {
+DADAO *funcao1_tipo1(const char *line) {
     char caracter;
     char char_anterior = 'c';
     int i=0, tam_string = 1, help=0;
@@ -146,7 +168,7 @@ DADAO *funcao1_tipo1(const char *line, FILE *saida) {
         if (caracter == ',' && cont == 0){
             string[tam_string-1] = '\0';
             input->id = atoi(string);
-            printf(" ID: %d ", input->id);
+            //printf(" ID: %d ", input->id);
             tam_string=0;
             help = 1;
         }
@@ -197,12 +219,12 @@ DADAO *funcao1_tipo1(const char *line, FILE *saida) {
                // printf("null ");
                 input->sigla[0] = '$';
                 input->sigla[1] = '$';
-                printf("SIGLA: %s ", input->sigla);
+                //printf("SIGLA: %s ", input->sigla);
             }
             else{
                 string[tam_string-1] = '\0';
                 strcpy(input->sigla, string);
-                printf("SIGLA: %s ", input->sigla);
+                //printf("SIGLA: %s ", input->sigla);
             }
             help = 1;
             tam_string=0;
@@ -240,7 +262,7 @@ DADAO *funcao1_tipo1(const char *line, FILE *saida) {
             tam_string=0;
         }
         if (cont == 7){
-            printf("\n");
+            //printf("\n");
             cont = 0;
             tam_string=0;
             return input;
@@ -255,7 +277,7 @@ DADAO *funcao1_tipo1(const char *line, FILE *saida) {
     return input;
 }
 
-DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
+DADAO2 *funcao1_tipo2(const char *line) {
     char caracter;
     char char_anterior = 'c';
     int i=0, tam_string = 1, help=0;
@@ -265,6 +287,8 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
     for (i = 0; i < strlen(line) ; i++){
         caracter = line[i];
         string[tam_string-1] = caracter;
+        input->removido = '0';
+        input->prox = -1;
         //printf("%c", caracter);
         if (caracter == ',' && cont == 0){
             string[tam_string-1] = '\0';
@@ -272,6 +296,7 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             //printf(" ID: %d ", input->id);
             tam_string=0;
             help = 1;
+            input->tamanhoRegistro += 4;
         }
         if (caracter == ',' && cont == 1){
             if (char_anterior == ','){
@@ -285,6 +310,7 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             }
             help = 1;
             tam_string=0;
+            input->tamanhoRegistro += 4;
         }
         if (caracter == ',' && cont == 2){
             if (char_anterior == ','){
@@ -293,12 +319,15 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             }
             else{
                 string[tam_string-1] = '\0';
+                input->codC5 = '0';
+                input->tamCidade = tam_string-1;
                 input->cidade = (char*) malloc(tam_string * sizeof(char));
                 strcpy(input->cidade, string);
                 //printf("CIDADE: %s ", input->cidade);
             }
             help = 1;
             tam_string=0;
+            input->tamanhoRegistro += 5 + tam_string;
         }
         if (caracter == ',' && cont == 3){
             if (char_anterior == ','){
@@ -312,10 +341,13 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             }
             help = 1;
             tam_string=0;
+            input->tamanhoRegistro += 4;
         }
         if (caracter == ',' && cont == 4){
             if (char_anterior == ','){
                 //printf("null ");
+                input->sigla[0] = '$';
+                input->sigla[1] = '$';
             }
             else{
                 string[tam_string-1] = '\0';
@@ -324,6 +356,7 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             }
             help = 1;
             tam_string=0;
+            input->tamanhoRegistro += 2;
         }
         if (caracter == ',' && cont == 5){
             if (char_anterior == ','){
@@ -332,12 +365,15 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             }
             else{
                 string[tam_string-1] = '\0';
+                input->codC6 = '1';
+                input->tamMarca = tam_string-1;
                 input->marca = (char*) malloc(tam_string * sizeof(char));
                 strcpy(input->marca, string);
                 //printf("MARCA: %s ", input->marca);
             }
             help = 1;
             tam_string=0;
+            input->tamanhoRegistro += 5 + tam_string;
         }
         if ( caracter == '\r' && cont == 6){
             if (char_anterior == ','){
@@ -346,12 +382,15 @@ DADAO2 *funcao1_tipo2(const char *line, FILE *saida) {
             }
             else{
                 string[tam_string-1] = '\0';
+                input->codC6 = '2';
+                input->tamModelo = tam_string-1;
                 input->modelo = (char*) malloc(tam_string * sizeof(char));
                 strcpy(input->modelo, string);
                 //printf("MODELO: %s ", input->modelo);
             }
             help = 1;
             tam_string=0;
+            input->tamanhoRegistro += 5 + tam_string;
         }
         if (cont == 7){
             //printf("\n");
