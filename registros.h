@@ -92,6 +92,10 @@ DADAO *funcao1_tipo1(const char *line);
 DADAO2 *funcao1_tipo2(const char *line);
 void funcao2_tipo1(char nome_entrada[30]);
 void funcao2_tipo2(char nome_entrada[30]);
+void funcao3_tipo1(char nome_entrada[30], int quantidade);
+void funcao3_tipo2(char nome_entrada[30], int quantidade);
 void binarioNaTela(char *nomeArquivoBinario);
+void scan_quote_string(char *str);
+void func3_aux_tipo1(char nome_entrada[30], char campo[30], char variavel[50], int cont, int*ajuda);
 
 #endif //TRABALHO_01_REGISTROS_H

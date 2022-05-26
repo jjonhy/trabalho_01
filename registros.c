@@ -5,6 +5,7 @@
 #include "registros.h"
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 CABECAO *set_cabecalho1()
 {
@@ -417,11 +418,277 @@ void funcao2_tipo1(char nome_entrada[30]){
 
     fclose(entrada);
 }
-
 void funcao2_tipo2(char nome_entrada[30]){
+    FILE *entrada;
+    entrada= fopen(nome_entrada, "rb");
+    // CABECAO *cabecalho = (CABECAO*) malloc(sizeof(CABECAO));
+    // fread(cabecalho, sizeof(CABECAO), 1, entrada);
+    fseek(entrada,190, SEEK_SET);
+    //char line[1024];
+    //fgets(line,1024,entrada);
+    int i = 0, somador=0;
+    do{
+        //fseek(entrada,190 + somador, SEEK_SET);
+        DADAO2 *input = (DADAO2*) malloc(sizeof(DADAO2));
+        //removido
+        fread(&(input->removido), sizeof(char ), 1 , entrada);
+        //printf("REMOVIDO %c ", input->removido);
+        //tamRegistro
+        fread(&(input->tamanhoRegistro), sizeof(int), 1 , entrada);
+        //printf("TAMREGISTRO %d ", input->tamanhoRegistro);
+        somador = input->tamanhoRegistro ;
+        //prox
+        if (somador > 0 ){
+            fread(&(input->prox), sizeof(long long int), 1 , entrada);
+            //printf("Prox %lld ", input->prox);
+            somador -= 8;
+        }
+        //id
+        if (somador > 0){
+            fread(&(input->id), sizeof(int), 1 , entrada);
+            //printf("ID %d ", input->id);
+            somador -= 4;
+        }
+        //ano
+        if (somador > 0) {
+            fread(&(input->ano), sizeof(int), 1 , entrada);
+            //printf("ANO %d ", input->ano);
+            somador -= 4;
+        }
+        //quantidade
+        if (somador > 0) {
+            fread(&(input->qtt), sizeof(int), 1 , entrada);
+            //printf("QTT %d ", input->qtt);
+            somador -= 4;
+        }
+        //sigla
+        if (somador > 0) {
+            fread(input->sigla, 2, 1 , entrada);
+            //printf("SIglaA %s ", input->sigla);
+            somador -= 2;
+        }
+
+        //marca,modelo e cidade
+        while (somador > 0) {
+            for (int j = 0; j < 3; j++) {
+                char auxc;
+                int auxnumero;
+                fread(&auxnumero, sizeof(int), 1, entrada);
+                //            printf("%d ", auxnumero);
+                somador -= 4;
+                if ( somador <= 0)
+                    break;
+                fread(&auxc, sizeof(char), 1, entrada);
+                somador -= 1;
+                if ( somador <= 0)
+                    break;
+                //            printf("%c ", auxc);
+                if (auxc == '0') {
+                    input->tamCidade = auxnumero;
+                    input->codC5 = auxc;
+                    input->cidade = malloc(input->tamCidade * sizeof(char));
+                    fread(input->cidade, input->tamCidade, 1, entrada);
+                    //printf("CIDADE %s ", input->cidade);
+                    somador -= input->tamCidade;
+                    if ( somador <= 0)
+                        break;
+                }
+                if (auxc == '1') {
+                    input->tamMarca = auxnumero;
+                    input->codC6 = auxc;
+                    input->marca = malloc(input->tamMarca * sizeof(char));
+                    fread(input->marca, input->tamMarca, 1, entrada);
+                    //printf("MARCA %s ", input->marca);
+                    somador -= input->tamMarca;
+                    if ( somador <= 0)
+                        break;
+                }
+                if (auxc == '2') {
+                    input->tamModelo = auxnumero;
+                    input->codC7 = auxc;
+                    input->modelo = malloc(input->tamModelo * sizeof(char));
+                    fread(input->modelo, input->tamModelo, 1, entrada);
+                    //printf("MODELO %s ", input->modelo);
+                    somador -= input->tamModelo;
+                    if ( somador <= 0)
+                        break;
+                }
+            }
+        }
+        if ( input->marca == NULL){
+            printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
+        }
+        else{
+            printf("MARCA DO VEICULO: %s\n", input->marca);
+        }
+        if ( input->modelo == NULL){
+            printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
+        }
+        else{
+            printf("MODELO DO VEICULO: %s\n", input->modelo);
+        }
+        if (input->ano == -1){
+            printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
+        }
+        else{
+            printf("ANO DE FABRICACAO: %d\n", input->ano);
+        }
+        if ( input->cidade == NULL){
+            printf("NOME DA CIDADE: NAO PREENCHIDO\n");
+        }
+        else{
+            printf("NOME DA CIDADE: %s\n", input->cidade);
+        }
+        if (input->qtt == -1){
+            printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
+        }
+        else{
+            printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
+        }
+        printf("\n");
+        i++;
+
+    }while(!feof(entrada));
+
+    fclose(entrada);
+}
+
+void funcao3_tipo1(char nome_entrada[30], int quantidade){
+
+    char campo[30];
+    char variavel[50];
+    int ajuda;
+    for (int i = 0; i < quantidade; ++i) {
+        scanf("%s", campo);
+        scan_quote_string(variavel);
+        //printf("\n%s e %s\n", str1, str2);
+        func3_aux_tipo1(nome_entrada, campo, variavel, quantidade, &ajuda);
+    }
 
 }
 
+void func3_aux_tipo1(char nome_entrada[30],char campo[30], char variavel[50], int cont, int *ajuda){
+    FILE *entrada;
+    entrada= fopen(nome_entrada, "rb");
+    // CABECAO *cabecalho = (CABECAO*) malloc(sizeof(CABECAO));
+    // fread(cabecalho, sizeof(CABECAO), 1, entrada);
+    fseek(entrada,182, SEEK_SET);
+    //char line[1024];
+    //fgets(line,1024,entrada);
+    *ajuda = 2;
+    printf("O campo é ;%s; a variavel é ;%s; e a ajuda é ;%d; e o cont;%d;", campo, variavel,*ajuda, cont);
+    int i = 0;
+    do{
+        fseek(entrada,182 + 97*i, SEEK_SET);
+        DADAO *input = (DADAO*) malloc(sizeof(DADAO));
+        fread(&(input->removido), sizeof(char ), 1 , entrada);
+        fread(&(input->prox), sizeof(int), 1 , entrada);
+        fread(&(input->id), sizeof(int), 1 , entrada);
+        fread(&(input->ano), sizeof(int), 1 , entrada);
+        fread(&(input->qtt), sizeof(int), 1 , entrada);
+        fread(input->sigla, 2, 1 , entrada);
+        for(int j = 0; j<3;j++){
+            char auxc;
+            int auxnumero;
+            fread(&auxnumero, sizeof(int), 1, entrada);
+            fread(&auxc, sizeof(char ), 1 , entrada);
+            if (auxc == '0'){
+                input->tamCidade = auxnumero;
+                input->codC5 = auxc;
+                input->cidade = malloc(input->tamCidade * sizeof(char ));
+                fread(input->cidade, input->tamCidade,1, entrada);
+            }
+            if (auxc == '1'){
+                input->tamMarca = auxnumero;
+                input->codC6 = auxc;
+                input->marca = malloc(input->tamMarca * sizeof(char ));
+                fread(input->marca, input->tamMarca,1, entrada);
+            }
+            if (auxc == '2'){
+                input->tamModelo = auxnumero;
+                input->codC7 = auxc;
+                input->modelo = malloc(input->tamModelo * sizeof(char ));
+                fread(input->modelo, input->tamModelo,1, entrada);
+            }
+        }
+
+        if ( input->removido == '0') {
+            if (strcmp(campo, "id") == 0){
+                if (input->id == atoi(variavel)){
+                    (*ajuda)++;
+                }
+            }
+            if (strcmp(campo, "ano") == 0){
+                if (input->ano == atoi(variavel)){
+                    (*ajuda)++;
+                }
+            }
+            if (strcmp(campo, "qtt") == 0){
+                if (input->qtt == atoi(variavel)){
+                    (*ajuda)++;
+                }
+            }
+            if (strcmp(campo, "sigla") == 0){
+                if (strcmp(input->sigla,variavel) == 0){
+                    (*ajuda)++;
+                }
+            }
+            if (strcmp(campo, "cidade") == 0){
+                if (strcmp(input->cidade,variavel) == 0){
+                    (*ajuda)++;
+                    printf("O campo é ;%s; a variavel é ;%s; e a ajuda é ;%d;", campo, variavel,*ajuda);
+
+                }
+            }
+            if (strcmp(campo, "marca") == 0){
+                if (strcmp(input->marca,variavel) == 0){
+                    (*ajuda)++;
+                }
+            }
+            if (strcmp(campo, "modelo") == 0){
+                if (strcmp(input->modelo,variavel) == 0){
+                    (*ajuda)++;
+                }
+            }
+            if (*ajuda == cont) {
+                if (input->marca == NULL) {
+                    printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
+                } else {
+                    printf("MARCA DO VEICULO: %s\n", input->marca);
+                }
+                if (input->modelo == NULL) {
+                    printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
+                } else {
+                    printf("MODELO DO VEICULO: %s\n", input->modelo);
+                }
+                if (input->ano == -1) {
+                    printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
+                } else {
+                    printf("ANO DE FABRICACAO: %d\n", input->ano);
+                }
+                if (input->cidade == NULL) {
+                    printf("NOME DA CIDADE: NAO PREENCHIDO\n");
+                } else {
+                    printf("NOME DA CIDADE: %s\n", input->cidade);
+                }
+                if (input->qtt == -1) {
+                    printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
+                } else {
+                    printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
+                }
+                printf("\n");
+            }
+        }
+        i++;
+
+    }while(!feof(entrada));
+
+    fclose(entrada);
+}
+
+void funcao3_tipo2(char nome_entrada[30], int quantidade){
+
+}
 void binarioNaTela(char*nomeArquivoBinario) { /* Você não precisa entender o código dessa função. */
 
     /* Use essa função para comparação no run.codes. Lembre-se de ter fechado (fclose) o arquivo anteriormente.
@@ -448,4 +715,39 @@ void binarioNaTela(char*nomeArquivoBinario) { /* Você não precisa entender o c
     printf("%lf\n", (cs / (double) 100));
     free(mb);
     fclose(fs);
+}
+
+void scan_quote_string(char *str) {
+
+    /*
+    *	Use essa função para ler um campo string delimitado entre aspas (").
+    *	Chame ela na hora que for ler tal campo. Por exemplo:
+    *
+    *	A entrada está da seguinte forma:
+    *		nomeDoCampo "MARIA DA SILVA"
+    *
+    *	Para ler isso para as strings já alocadas str1 e str2 do seu programa, você faz:
+    *		scanf("%s", str1); // Vai salvar nomeDoCampo em str1
+    *		scan_quote_string(str2); // Vai salvar MARIA DA SILVA em str2 (sem as aspas)
+    *
+    */
+
+    char R;
+
+    while((R = getchar()) != EOF && isspace(R)); // ignorar espaços, \r, \n...
+
+    if(R == 'N' || R == 'n') { // campo NULO
+        getchar(); getchar(); getchar(); // ignorar o "ULO" de NULO.
+        strcpy(str, ""); // copia string vazia
+    } else if(R == '\"') {
+        if(scanf("%[^\"]", str) != 1) { // ler até o fechamento das aspas
+            strcpy(str, "");
+        }
+        getchar(); // ignorar aspas fechando
+    } else if(R != EOF){ // vc tá tentando ler uma string que não tá entre aspas! Fazer leitura normal %s então, pois deve ser algum inteiro ou algo assim...
+        str[0] = R;
+        scanf("%s", &str[1]);
+    } else { // EOF
+        strcpy(str, "");
+    }
 }
