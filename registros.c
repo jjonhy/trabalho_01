@@ -60,10 +60,23 @@ CABECAO2 *set_cabecalho2()
     return cab_return;
 }
 
+//atualiza o proxrrn do cabeçalho
+void atual_cabecalho1(int proxRRN, char nome_saida[30])
+{
+    CABECAO *cabecinha = set_cabecalho1();
+    FILE* fatualize = fopen(nome_saida,"r+b");
+    fseek(fatualize,0,SEEK_SET);
+    cabecinha->proxRRN = proxRRN;
+    fwrite(cabecinha,sizeof (CABECAO), 1 ,fatualize);
+    fclose(fatualize);
+
+    printf("%d\n",cabecinha->proxRRN);
+}
+
 void tipo1(char nome_entrada[30], char nome_saida[30]){
     FILE *entrada;
     FILE *saida;
-
+    int reg_num = 0;
     CABECAO *cabecinha = set_cabecalho1();
 
     entrada= fopen(nome_entrada, "r");
@@ -73,18 +86,26 @@ void tipo1(char nome_entrada[30], char nome_saida[30]){
 
     char line[1024];
     fgets(line,1024,entrada);
-    while(fgets(line,1024,entrada)){
+    while(fgets(line,1024,entrada))
+    {
+
+        reg_num++;
         DADAO *input = funcao1_tipo1(line);
         escreverbin1(saida, input);
     }
+
     fclose(entrada);
     fclose(saida);
-
+    atual_cabecalho1(reg_num,nome_entrada);
     binarioNaTela(nome_saida);
 }
 
+
 //escreve no arq binario tipo 1
 void escreverbin1(FILE *saida, const DADAO *input) {
+
+    int data_size = 19; //tamanho min do registro
+
     fwrite(&input->removido, sizeof(char ), 1, saida);
     fwrite(&input->prox, sizeof(int ),1, saida);
     fwrite(&input->id, sizeof(int ),1, saida);
@@ -95,18 +116,25 @@ void escreverbin1(FILE *saida, const DADAO *input) {
         fwrite(&input->tamCidade, sizeof(int ),1, saida);
         fwrite(&input->codC5, sizeof(char ),1, saida);
         fwrite(input->cidade, input->tamCidade * sizeof(char ),1, saida);
+        data_size += input->tamCidade + 5;
     }
     if (input->marca != NULL){
         fwrite(&input->tamMarca, sizeof(int ),1, saida);
         fwrite(&input->codC6, sizeof(char ),1, saida);
         fwrite(input->marca, input->tamMarca * sizeof(char ),1, saida);
+        data_size += input->tamMarca + 5;
     }
     if (input->modelo != NULL){
         fwrite(&input->tamModelo, sizeof(int ),1, saida);
         fwrite(&input->codC7, sizeof(char ),1, saida);
         fwrite(input->modelo, input->tamModelo * sizeof(char ),1, saida);
+        data_size += input->tamModelo + 5;
     }
-    
+
+    //prencheendo o resto do registro com $, caso haja espaço sobrando
+    data_size = 97 - data_size;
+    for(int i =0; i<data_size;i++)
+        fputc('$',saida);
 }
 
 void tipo2(char nome_entrada[30], char nome_saida[30]){
@@ -166,7 +194,6 @@ DADAO *funcao1_tipo1(const char *line) {
     char char_anterior = 'c';
     int i=0, tam_string = 1, help=0;
     int cont = 0;
-
     DADAO *input = (DADAO *) malloc(sizeof(DADAO));
 
     char *string = malloc( tam_string * sizeof(char));
@@ -228,7 +255,7 @@ DADAO *funcao1_tipo1(const char *line) {
         }
         if (caracter == ',' && cont == 4){
             if (char_anterior == ','){
-               // printf("null ");
+                // printf("null ");
                 input->sigla[0] = '$';
                 input->sigla[1] = '$';
                 //printf("SIGLA: %s ", input->sigla);
@@ -502,7 +529,7 @@ void funcao2_tipo2(char nome_entrada[30]){
     FILE *entrada = fopen(nome_entrada, "rb");
 
     CABECAO2 *verifica = (CABECAO2 *) malloc(sizeof(CABECAO2));
-    fread(&(verifica->status), sizeof(char ),1, entrada); // verifica se o 
+    fread(&(verifica->status), sizeof(char ),1, entrada); // verifica se o
 
     if (verifica->status == '0'){
         printf("Falha no processamento do arquivo.");
@@ -516,10 +543,10 @@ void funcao2_tipo2(char nome_entrada[30]){
             DADAO2 *input = (DADAO2*) malloc(sizeof(DADAO2));
             //removido
             fread(&(input->removido), sizeof(char ), 1 , entrada);
-                //printf("REMOVIDO %c ", input->removido);
+            //printf("REMOVIDO %c ", input->removido);
             //tamRegistro
             fread(&(input->tamanhoRegistro), sizeof(int), 1 , entrada);
-                //printf("TAMREGISTRO %d ", input->tamanhoRegistro);
+            //printf("TAMREGISTRO %d ", input->tamanhoRegistro);
             somador = input->tamanhoRegistro ; // conta o tamanho do registro
             //prox
             if (somador > 0 ){
