@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/main.c
+stdio.h
+-
+string.h
+-
+registros.h
+/mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.h
+
 /mnt/c/Users/conta/Desktop/FACUL/ARQUIVOS/trabalho_01/registros.c
 stdio.h
 -

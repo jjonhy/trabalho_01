@@ -96,5 +96,10 @@ void funcao4(char nome_entrada[30], int RRN);
 void binarioNaTela(char *nomeArquivoBinario);
 void scan_quote_string(char *str);
 DADAO* retornainput(char nome_entrada[30], int i);
+void escreverbin1(FILE *saida, const DADAO *input);
+void escrevebin2(FILE *saida, const DADAO2 *input);
 void printainput();
+void buscaRRN(FILE *entrada, DADAO *input);
+void printainput2(const DADAO2 *input);
+
 #endif //TRABALHO_01_REGISTROS_H

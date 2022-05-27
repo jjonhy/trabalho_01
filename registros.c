@@ -7,8 +7,8 @@
 #include <string.h>
 #include <ctype.h>
 
-CABECAO *set_cabecalho1()
-{
+
+CABECAO *set_cabecalho1(){
     //criando e alocando espaço para o registro
     CABECAO *cab_return;
     cab_return = (CABECAO *)malloc(sizeof(CABECAO));
@@ -32,6 +32,7 @@ CABECAO *set_cabecalho1()
 
     return cab_return;
 }
+
 CABECAO2 *set_cabecalho2()
 {
     //criando e alocando espaço para o registro
@@ -39,7 +40,7 @@ CABECAO2 *set_cabecalho2()
     cab_return = (CABECAO2*)malloc(sizeof(CABECAO2));
 
     //prenchendo o registro com as informações iniciais
-    cab_return->status = '0';
+    cab_return->status = '1';
     cab_return->topo = -1;
     strcpy(cab_return->descricao,"LISTAGEM DA FROTA DOS VEICULOS NO BRASIL");
     strcpy(cab_return->desC1, "CODIGO IDENTIFICADOR: ");
@@ -73,37 +74,41 @@ void tipo1(char nome_entrada[30], char nome_saida[30]){
     char line[1024];
     fgets(line,1024,entrada);
     while(fgets(line,1024,entrada)){
-        //printf("tam de line %lu\n", strlen(line));
         DADAO *input = funcao1_tipo1(line);
-        fwrite(&input->removido, sizeof(char ),1, saida);
-        fwrite(&input->prox, sizeof(int ),1, saida);
-        fwrite(&input->id, sizeof(int ),1, saida);
-        fwrite(&input->ano, sizeof(int ),1, saida);
-        fwrite(&input->qtt, sizeof (int),1, saida);
-        fwrite(input->sigla, 2 * sizeof(char ),1, saida);
-        if (input->cidade != NULL){
-            fwrite(&input->tamCidade, sizeof(int ),1, saida);
-            fwrite(&input->codC5, sizeof(char ),1, saida);
-            fwrite(input->cidade, input->tamCidade * sizeof(char ),1, saida);
-        }
-        if (input->marca != NULL){
-            fwrite(&input->tamMarca, sizeof(int ),1, saida);
-            fwrite(&input->codC6, sizeof(char ),1, saida);
-            fwrite(input->marca, input->tamMarca * sizeof(char ),1, saida);
-        }
-        if (input->modelo != NULL){
-            fwrite(&input->tamModelo, sizeof(int ),1, saida);
-            fwrite(&input->codC7, sizeof(char ),1, saida);
-            fwrite(input->modelo, input->tamModelo * sizeof(char ),1, saida);
-        }
-        //fwrite(input, sizeof(DADAO),1, saida);
-        //printf("%d\n", input->id);
+        escreverbin1(saida, input);
     }
     fclose(entrada);
     fclose(saida);
-    binarioNaTela(nome_saida);
 
+    binarioNaTela(nome_saida);
 }
+
+//escreve no arq binario tipo 1
+void escreverbin1(FILE *saida, const DADAO *input) {
+    fwrite(&input->removido, sizeof(char ), 1, saida);
+    fwrite(&input->prox, sizeof(int ),1, saida);
+    fwrite(&input->id, sizeof(int ),1, saida);
+    fwrite(&input->ano, sizeof(int ),1, saida);
+    fwrite(&input->qtt, sizeof (int),1, saida);
+    fwrite(input->sigla, 2 * sizeof(char ),1, saida);
+    if (input->cidade != NULL){
+        fwrite(&input->tamCidade, sizeof(int ),1, saida);
+        fwrite(&input->codC5, sizeof(char ),1, saida);
+        fwrite(input->cidade, input->tamCidade * sizeof(char ),1, saida);
+    }
+    if (input->marca != NULL){
+        fwrite(&input->tamMarca, sizeof(int ),1, saida);
+        fwrite(&input->codC6, sizeof(char ),1, saida);
+        fwrite(input->marca, input->tamMarca * sizeof(char ),1, saida);
+    }
+    if (input->modelo != NULL){
+        fwrite(&input->tamModelo, sizeof(int ),1, saida);
+        fwrite(&input->codC7, sizeof(char ),1, saida);
+        fwrite(input->modelo, input->tamModelo * sizeof(char ),1, saida);
+    }
+    
+}
+
 void tipo2(char nome_entrada[30], char nome_saida[30]){
     FILE *entrada;
     FILE *saida;
@@ -112,43 +117,50 @@ void tipo2(char nome_entrada[30], char nome_saida[30]){
 
     entrada= fopen(nome_entrada, "r");
     saida= fopen(nome_saida, "w+b");
+
     fwrite(cabecinha,sizeof(CABECAO2),1 ,saida);
+
     char line[1024];
     fgets(line,1024,entrada);
+
     while(fgets(line,1024,entrada)){
-        //printf("tam de line %lu\n", strlen(line));
         DADAO2 *input = funcao1_tipo2(line);
-        //fwrite(input, sizeof(DADAO),1 , saida);
-        //printf("%d\n", input->id);
-        fwrite(&input->removido, sizeof(char ),1, saida);
-        fwrite(&input->tamanhoRegistro, sizeof(int ),1, saida);
-        fwrite(&input->prox, sizeof(long long int ),1, saida);
-        fwrite(&input->id, sizeof(int ),1, saida);
-        fwrite(&input->ano, sizeof(int ),1, saida);
-        fwrite(&input->qtt, sizeof (int),1, saida);
-        fwrite(input->sigla, 2 * sizeof(char ),1, saida);
-        if (input->cidade != NULL){
-            fwrite(&input->tamCidade, sizeof(int ),1, saida);
-            fwrite(&input->codC5, sizeof(char ),1, saida);
-            fwrite(input->cidade, input->tamCidade * sizeof(char ),1, saida);
-        }
-        if (input->marca != NULL){
-            fwrite(&input->tamMarca, sizeof(int ),1, saida);
-            fwrite(&input->codC6, sizeof(char ),1, saida);
-            fwrite(input->marca, input->tamMarca * sizeof(char ),1, saida);
-        }
-        if (input->modelo != NULL){
-            fwrite(&input->tamModelo, sizeof(int ),1, saida);
-            fwrite(&input->codC7, sizeof(char ),1, saida);
-            fwrite(input->modelo, input->tamModelo * sizeof(char ),1, saida);
-        }
+        escrevebin2(saida, input);
     }
+
     fclose(entrada);
     fclose(saida);
 
     binarioNaTela(nome_saida);
 }
 
+//escreve no arq binario tipo 2
+void escrevebin2(FILE *saida, const DADAO2 *input) {
+    fwrite(&input->removido, sizeof(char ), 1, saida);
+    fwrite(&input->tamanhoRegistro, sizeof(int ),1, saida);
+    fwrite(&input->prox, sizeof(long long int ),1, saida);
+    fwrite(&input->id, sizeof(int ),1, saida);
+    fwrite(&input->ano, sizeof(int ),1, saida);
+    fwrite(&input->qtt, sizeof (int),1, saida);
+    fwrite(input->sigla, 2 * sizeof(char ),1, saida);
+    if (input->cidade != NULL){
+        fwrite(&input->tamCidade, sizeof(int ),1, saida);
+        fwrite(&input->codC5, sizeof(char ),1, saida);
+        fwrite(input->cidade, input->tamCidade * sizeof(char ),1, saida);
+    }
+    if (input->marca != NULL){
+        fwrite(&input->tamMarca, sizeof(int ),1, saida);
+        fwrite(&input->codC6, sizeof(char ),1, saida);
+        fwrite(input->marca, input->tamMarca * sizeof(char ),1, saida);
+    }
+    if (input->modelo != NULL){
+        fwrite(&input->tamModelo, sizeof(int ),1, saida);
+        fwrite(&input->codC7, sizeof(char ),1, saida);
+        fwrite(input->modelo, input->tamModelo * sizeof(char ),1, saida);
+    }
+}
+
+// essa funcao coloca os dados de uma linha em uma variavel do tipo1, considerando quando alguma variavel é nula
 DADAO *funcao1_tipo1(const char *line) {
     char caracter;
     char char_anterior = 'c';
@@ -252,7 +264,7 @@ DADAO *funcao1_tipo1(const char *line) {
             }
             else{
                 string[tam_string-1] = '\0';
-                input->codC7 = '0';
+                input->codC7 = '2';
                 input->tamModelo = tam_string-1;
                 input->modelo = (char*) malloc(tam_string * sizeof(char));
                 strcpy(input->modelo, string);
@@ -277,6 +289,7 @@ DADAO *funcao1_tipo1(const char *line) {
     return input;
 }
 
+// essa funcao coloca os dados de uma linha em uma variavel do tipo2, considerando quando alguma variavel é nula
 DADAO2 *funcao1_tipo2(const char *line) {
     char caracter;
     char char_anterior = 'c';
@@ -296,7 +309,7 @@ DADAO2 *funcao1_tipo2(const char *line) {
             //printf(" ID: %d ", input->id);
             tam_string=0;
             help = 1;
-            input->tamanhoRegistro += 4;
+            input->tamanhoRegistro += 9;
         }
         if (caracter == ',' && cont == 1){
             if (char_anterior == ','){
@@ -409,7 +422,6 @@ DADAO2 *funcao1_tipo2(const char *line) {
 }
 
 void funcao2_tipo1(char nome_entrada[30]){
-
     FILE *entrada = fopen(nome_entrada, "rb");
     CABECAO *verifica = (CABECAO *) malloc(sizeof(CABECAO));
     fread(&(verifica->status), sizeof(char ),1, entrada);
@@ -429,40 +441,7 @@ void funcao2_tipo1(char nome_entrada[30]){
     }
 }
 
-void printainput(DADAO *input){
-    if (input->marca == NULL){
-        printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
-    }
-    if (input->marca != NULL){
-        printf("MARCA DO VEICULO: %s\n", input->marca);
-    }
-    if (input->modelo == NULL){
-        printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
-    }
-    if (input->modelo != NULL){
-        printf("MODELO DO VEICULO: %s\n", input->modelo);
-    }
-    if (input->ano == -1){
-        printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
-    }
-    if (input->ano != -1){
-        printf("ANO DE FABRICACAO: %d\n", input->ano);
-    }
-    if (input->cidade == NULL){
-        printf("NOME DA CIDADE: NAO PREENCHIDO\n");
-    }
-    if (input->cidade != NULL){
-        printf("NOME DA CIDADE: %s\n", input->cidade);
-    }
-    if (input->qtt == -1){
-        printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
-    }
-    if (input->qtt != -1){
-        printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-    }
-    printf("\n");
-}
-
+//retorna um registro lido do arq binario
 DADAO* retornainput(char nome_entrada[30], int i){
     FILE *entrada;
     entrada= fopen(nome_entrada, "rb");
@@ -498,9 +477,7 @@ DADAO* retornainput(char nome_entrada[30], int i){
             input->codC5 = auxc;
             input->cidade = malloc(input->tamCidade+1 * sizeof(char ));
             fread(input->cidade, input->tamCidade,1, entrada);
-
             //printf("CIDADE %s ", input->cidade);
-
         }
         if (auxc == '1'){
             input->tamMarca = auxnumero;
@@ -508,7 +485,6 @@ DADAO* retornainput(char nome_entrada[30], int i){
             input->marca = malloc(input->tamMarca * sizeof(char ));
             fread(input->marca, input->tamMarca,1, entrada);
             //printf("MARCA %s ", input->marca);
-
         }
         if (auxc == '2'){
             input->tamModelo = auxnumero;
@@ -521,32 +497,30 @@ DADAO* retornainput(char nome_entrada[30], int i){
     //printf("\n");
     return input;
 }
+
 void funcao2_tipo2(char nome_entrada[30]){
     FILE *entrada = fopen(nome_entrada, "rb");
 
     CABECAO2 *verifica = (CABECAO2 *) malloc(sizeof(CABECAO2));
-    fread(&(verifica->status), sizeof(char ),1, entrada);
+    fread(&(verifica->status), sizeof(char ),1, entrada); // verifica se o 
 
     if (verifica->status == '0'){
         printf("Falha no processamento do arquivo.");
     }
     else{
-        // CABECAO *cabecalho = (CABECAO*) malloc(sizeof(CABECAO));
-        // fread(cabecalho, sizeof(CABECAO), 1, entrada);
-        fseek(entrada,190, SEEK_SET);
-        //char line[1024];
-        //fgets(line,1024,entrada);
+
+        fseek(entrada,190, SEEK_SET); // aponta para depois do cabeçalho
+
         int i = 0, somador=0;
         do{
-            //fseek(entrada,190 + somador, SEEK_SET);
             DADAO2 *input = (DADAO2*) malloc(sizeof(DADAO2));
             //removido
             fread(&(input->removido), sizeof(char ), 1 , entrada);
-            //printf("REMOVIDO %c ", input->removido);
+                //printf("REMOVIDO %c ", input->removido);
             //tamRegistro
             fread(&(input->tamanhoRegistro), sizeof(int), 1 , entrada);
-            //printf("TAMREGISTRO %d ", input->tamanhoRegistro);
-            somador = input->tamanhoRegistro ;
+                //printf("TAMREGISTRO %d ", input->tamanhoRegistro);
+            somador = input->tamanhoRegistro ; // conta o tamanho do registro
             //prox
             if (somador > 0 ){
                 fread(&(input->prox), sizeof(long long int), 1 , entrada);
@@ -626,39 +600,12 @@ void funcao2_tipo2(char nome_entrada[30]){
                 }
             }
             if (input->ano != 0) {
-                if (input->marca == NULL) {
-                    printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
-                } else {
-                    printf("MARCA DO VEICULO: %s\n", input->marca);
-                }
-                if (input->modelo == NULL) {
-                    printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
-                } else {
-                    printf("MODELO DO VEICULO: %s\n", input->modelo);
-                }
-                if (input->ano == -1) {
-                    printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
-                } else {
-                    printf("ANO DE FABRICACAO: %d\n", input->ano);
-                }
-                if (input->cidade == NULL) {
-                    printf("NOME DA CIDADE: NAO PREENCHIDO\n");
-                } else {
-                    printf("NOME DA CIDADE: %s\n", input->cidade);
-                }
-                if (input->qtt == -1) {
-                    printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
-                } else {
-                    printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-                }
-                printf("\n");
+                printainput2(input);
             }
             i++;
 
         }while(!feof(entrada));
     }
-
-
     fclose(entrada);
 }
 
@@ -765,32 +712,7 @@ void funcao3_tipo1(char nome_entrada[30], int quantidade){
         }
         //printf("\n");
         if (ajuda == quantidade && input->removido == '0') {
-            if (input->marca == NULL) {
-                printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
-            } else {
-                printf("MARCA DO VEICULO: %s\n", input->marca);
-            }
-            if (input->modelo == NULL) {
-                printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
-            } else {
-                printf("MODELO DO VEICULO: %s\n", input->modelo);
-            }
-            if (input->ano == -1) {
-                printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
-            } else {
-                printf("ANO DE FABRICACAO: %d\n", input->ano);
-            }
-            if (input->cidade == NULL) {
-                printf("NOME DA CIDADE: NAO PREENCHIDO\n");
-            } else {
-                printf("NOME DA CIDADE: %s\n", input->cidade);
-            }
-            if (input->qtt == -1) {
-                printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
-            } else {
-                printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-            }
-            printf("\n");
+            printainput(input);
         }
         ajuda = 0;
         i++;
@@ -798,6 +720,7 @@ void funcao3_tipo1(char nome_entrada[30], int quantidade){
 
     fclose(entrada);
 }
+
 void funcao3_tipo2(char nome_entrada[30], int quantidade){
     char campo[quantidade][30];
     char variavel[quantidade][50];
@@ -806,6 +729,7 @@ void funcao3_tipo2(char nome_entrada[30], int quantidade){
         scanf("%s", campo[i]);
         scan_quote_string(variavel[i]);
     }
+
     FILE *entrada;
     entrada= fopen(nome_entrada, "rb");
     fseek(entrada,190, SEEK_SET);
@@ -936,32 +860,7 @@ void funcao3_tipo2(char nome_entrada[30], int quantidade){
             }
         }
         if (ajuda == quantidade && input->removido == '0') {
-            if (input->marca == NULL) {
-                printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
-            } else {
-                printf("MARCA DO VEICULO: %s\n", input->marca);
-            }
-            if (input->modelo == NULL) {
-                printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
-            } else {
-                printf("MODELO DO VEICULO: %s\n", input->modelo);
-            }
-            if (input->ano == -1) {
-                printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
-            } else {
-                printf("ANO DE FABRICACAO: %d\n", input->ano);
-            }
-            if (input->cidade == NULL) {
-                printf("NOME DA CIDADE: NAO PREENCHIDO\n");
-            } else {
-                printf("NOME DA CIDADE: %s\n", input->cidade);
-            }
-            if (input->qtt == -1) {
-                printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
-            } else {
-                printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-            }
-            printf("\n");
+            printainput2(input);
         }
         ajuda = 0;
         i++;
@@ -978,69 +877,49 @@ void funcao4(char nome_entrada[30], int RRN){
     }
     else {
         //entrada = fopen(nome_entrada, "rb");
-        fseek(entrada, 182 + 97 * RRN, SEEK_SET);
+        fseek(entrada, 182 + 97 * RRN, SEEK_SET); // aponta para o byte desejado com rrn
         DADAO *input = (DADAO *) malloc(sizeof(DADAO));
-        fread(&(input->removido), sizeof(char), 1, entrada);
-        fread(&(input->prox), sizeof(int), 1, entrada);
-        fread(&(input->id), sizeof(int), 1, entrada);
-        fread(&(input->ano), sizeof(int), 1, entrada);
-        fread(&(input->qtt), sizeof(int), 1, entrada);
-        fread(input->sigla, 2, 1, entrada);
-        for (int j = 0; j < 3; j++) {
-            char auxc;
-            int auxnumero;
-            fread(&auxnumero, sizeof(int), 1, entrada);
-            fread(&auxc, sizeof(char), 1, entrada);
-            if (auxc == '0') {
-                input->tamCidade = auxnumero;
-                input->codC5 = auxc;
-                input->cidade = malloc(input->tamCidade * sizeof(char));
-                fread(input->cidade, input->tamCidade, 1, entrada);
-            }
-            if (auxc == '1') {
-                input->tamMarca = auxnumero;
-                input->codC6 = auxc;
-                input->marca = malloc(input->tamMarca * sizeof(char));
-                fread(input->marca, input->tamMarca, 1, entrada);
-            }
-            if (auxc == '2') {
-                input->tamModelo = auxnumero;
-                input->codC7 = auxc;
-                input->modelo = malloc(input->tamModelo * sizeof(char));
-                fread(input->modelo, input->tamModelo, 1, entrada);
-            }
-        }
+        buscaRRN(entrada, input);
         if (input->removido == '0') {
-            if (input->marca == NULL) {
-                printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
-            } else {
-                printf("MARCA DO VEICULO: %s\n", input->marca);
-            }
-            if (input->modelo == NULL) {
-                printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
-            } else {
-                printf("MODELO DO VEICULO: %s\n", input->modelo);
-            }
-            if (input->ano == -1) {
-                printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
-            } else {
-                printf("ANO DE FABRICACAO: %d\n", input->ano);
-            }
-            if (input->cidade == NULL) {
-                printf("NOME DA CIDADE: NAO PREENCHIDO\n");
-            } else {
-                printf("NOME DA CIDADE: %s\n", input->cidade);
-            }
-            if (input->qtt == -1) {
-                printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
-            } else {
-                printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
-            }
-            printf("\n");
+            printainput(input);
         } else {
             printf("Registro inexistente.");
         }
         fclose(entrada);
+    }
+}
+
+//coloca em input as infos do registro de rrn escolhido
+void buscaRRN(FILE *entrada, DADAO *input) {
+    fread(&(input->removido), sizeof(char), 1, entrada);
+    fread(&(input->prox), sizeof(int), 1, entrada);
+    fread(&(input->id), sizeof(int), 1, entrada);
+    fread(&(input->ano), sizeof(int), 1, entrada);
+    fread(&(input->qtt), sizeof(int), 1, entrada);
+    fread(input->sigla, 2, 1, entrada);
+    for (int j = 0; j < 3; j++) {
+        char auxc;
+        int auxnumero;
+        fread(&auxnumero, sizeof(int), 1, entrada);
+        fread(&auxc, sizeof(char), 1, entrada);
+        if (auxc == '0') {
+            input->tamCidade = auxnumero;
+            input->codC5 = auxc;
+            input->cidade = malloc(input->tamCidade * sizeof(char));
+            fread(input->cidade, input->tamCidade, 1, entrada);
+        }
+        if (auxc == '1') {
+            input->tamMarca = auxnumero;
+            input->codC6 = auxc;
+            input->marca = malloc(input->tamMarca * sizeof(char));
+            fread(input->marca, input->tamMarca, 1, entrada);
+        }
+        if (auxc == '2') {
+            input->tamModelo = auxnumero;
+            input->codC7 = auxc;
+            input->modelo = malloc(input->tamModelo * sizeof(char));
+            fread(input->modelo, input->tamModelo, 1, entrada);
+        }
     }
 }
 
@@ -1105,4 +984,69 @@ void scan_quote_string(char *str) {
     } else { // EOF
         strcpy(str, "");
     }
+}
+
+//printa o input tipo 1 conforme solicitado
+void printainput(DADAO *input){
+    if (input->marca == NULL){
+        printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
+    }
+    if (input->marca != NULL){
+        printf("MARCA DO VEICULO: %s\n", input->marca);
+    }
+    if (input->modelo == NULL){
+        printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
+    }
+    if (input->modelo != NULL){
+        printf("MODELO DO VEICULO: %s\n", input->modelo);
+    }
+    if (input->ano == -1){
+        printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
+    }
+    if (input->ano != -1){
+        printf("ANO DE FABRICACAO: %d\n", input->ano);
+    }
+    if (input->cidade == NULL){
+        printf("NOME DA CIDADE: NAO PREENCHIDO\n");
+    }
+    if (input->cidade != NULL){
+        printf("NOME DA CIDADE: %s\n", input->cidade);
+    }
+    if (input->qtt == -1){
+        printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
+    }
+    if (input->qtt != -1){
+        printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
+    }
+    printf("\n");
+}
+
+//printa o input tipo 2 conforme solicitado
+void printainput2(const DADAO2 *input) {
+    if (input->marca == NULL) {
+        printf("MARCA DO VEICULO: NAO PREENCHIDO\n");
+    } else {
+        printf("MARCA DO VEICULO: %s\n", input->marca);
+    }
+    if (input->modelo == NULL) {
+        printf("MODELO DO VEICULO: NAO PREENCHIDO\n");
+    } else {
+        printf("MODELO DO VEICULO: %s\n", input->modelo);
+    }
+    if (input->ano == -1) {
+        printf("ANO DE FABRICACAO: NAO PREENCHIDO\n");
+    } else {
+        printf("ANO DE FABRICACAO: %d\n", input->ano);
+    }
+    if (input->cidade == NULL) {
+        printf("NOME DA CIDADE: NAO PREENCHIDO\n");
+    } else {
+        printf("NOME DA CIDADE: %s\n", input->cidade);
+    }
+    if (input->qtt == -1) {
+        printf("QUANTIDADE DE VEICULOS: NAO PREENCHIDO\n");
+    } else {
+        printf("QUANTIDADE DE VEICULOS: %d\n", input->qtt);
+    }
+    printf("\n");
 }

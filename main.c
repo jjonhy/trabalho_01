@@ -1,6 +1,7 @@
-//
-// Created by conta on 16/05/2022.
-//
+/*
+JOAO PEDRO MATOS DE DEUS - NUSP 12677492
+Guilherme Makarovsky Galvão NUSP 5314920
+*/
 
 #include <stdio.h>
 #include <string.h>
@@ -12,12 +13,7 @@ int main() {
     char nome_entrada[30];
     char nome_saida[30];
 
-    //strcpy(tipo,"tipo2");
-    //escolha = 4;
-    //strcpy(nome_entrada,"arquivoEntrada1.csv");
-    //strcpy(nome_saida,"bin.bin");
     scanf("%d", &escolha);
-    //strcpy(nome_entrada,"binario15.bin");
 
     if (escolha == 1){
         scanf("%s %s %s",tipo,nome_entrada,nome_saida);
